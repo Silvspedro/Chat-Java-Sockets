@@ -12,7 +12,7 @@ public class ClienteSocket {
 
 	public static void main(String[] args) {
 		try {
-			final Socket cliente = new Socket("127.0.0.1", 3020);
+			final Socket cliente = new Socket("127.0.0.1", 9998);
 
 			cliente.getInputStream();
 
@@ -34,7 +34,7 @@ public class ClienteSocket {
 				}
 			}.start();
 
-			PrintWriter escritor = new PrintWriter(cliente.getOutputStream());
+			PrintWriter escritor = new PrintWriter(cliente.getOutputStream(), true);
 			BufferedReader leitorTerminal = new BufferedReader(new InputStreamReader(System.in));
 			while (true) {
 				String mensagemTerminal = leitorTerminal.readLine();

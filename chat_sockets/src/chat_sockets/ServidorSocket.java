@@ -11,7 +11,7 @@ public class ServidorSocket {
 		ServerSocket servidor = null;
 		try {
 			System.out.println("Iniando servidor...");
-			servidor = new ServerSocket(3020);
+			servidor = new ServerSocket(9998);
 			System.out.println("Servidor Iniciado");
 			
 			while (true) {
@@ -25,7 +25,7 @@ public class ServidorSocket {
 					servidor.close();
 			} catch (IOException e1) {
 			}
-			System.err.println("A porta estaa em uso ou o servidor foi fechado");
+			System.err.println("A porta esta em uso ou o servidor foi fechado");
 			e.printStackTrace();
 		}
 

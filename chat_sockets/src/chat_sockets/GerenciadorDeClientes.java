@@ -28,6 +28,8 @@ public class GerenciadorDeClientes extends Thread{
 			escritor.println("Por favor escreva seu nome");
 			String msg = leitor.readLine();
 			this.nomeCliente = msg;
+			escritor.println("Olá " + this.nomeCliente);
+			escritor.println("o que voce precisa?");			
 			
 			while (true) {
 				msg = leitor.readLine();
@@ -35,7 +37,7 @@ public class GerenciadorDeClientes extends Thread{
 			}
 			
 		} catch (IOException e) {
-			System.err.println("O cliente fechoua conexão");
+			System.err.println("O cliente fechou a conexão");
 		}
 		super.run();
 	}
