@@ -36,9 +36,16 @@ public class ClienteSocket {
 
 			PrintWriter escritor = new PrintWriter(cliente.getOutputStream(), true);
 			BufferedReader leitorTerminal = new BufferedReader(new InputStreamReader(System.in));
-			while (true) {
-				String mensagemTerminal = leitorTerminal.readLine();
+			String mensagemTerminal = "" ;
+			while ( true ) {
+				mensagemTerminal  = leitorTerminal.readLine();
+				if(mensagemTerminal == null || mensagemTerminal.length() == 0) {
+					continue;
+				}
 				escritor.println(mensagemTerminal);
+				if (mensagemTerminal.equalsIgnoreCase("::Sair")) {
+					System.exit(0);
+				}
 			}
 			
 			

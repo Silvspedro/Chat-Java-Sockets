@@ -33,7 +33,12 @@ public class GerenciadorDeClientes extends Thread{
 			
 			while (true) {
 				msg = leitor.readLine();
-				escritor.println(this.nomeCliente + ", Disse: " + msg);
+				if (msg.equalsIgnoreCase("::Sair")) {
+					this.cliente.close();
+				}else {
+					escritor.println(this.nomeCliente + ", Disse: " + msg);
+				}
+				
 			}
 			
 		} catch (IOException e) {
