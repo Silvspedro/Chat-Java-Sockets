@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 
 public class GerenciadorDeClientes extends Thread {
@@ -30,49 +31,76 @@ public class GerenciadorDeClientes extends Thread {
 		try {
 			leitor = new BufferedReader(new InputStreamReader(cliente.getInputStream()));
 			escritor = new PrintWriter(cliente.getOutputStream(), true);
-			escritor.println("Por favor escreva seu nome");
-			String msg = leitor.readLine();
-			this.nomeCliente = msg;
-			escritor.println("Olá " + this.nomeCliente);
-			escritor.println("o que voce precisa?");
-			clientes.put(this.nomeCliente, this);
+
+			efetuarLogin();
+			String msg;
 
 			while (true) {
 				msg = leitor.readLine();
-				if (msg.equalsIgnoreCase("::Sair")) {
+				if (msg.equalsIgnoreCase(Comandos.SAIR)) {
 					this.cliente.close();
-				} else if (msg.toLowerCase().startsWith("::msg")) {
-//					clientes.get(msg.substring(5, msg.length()));
-					String nomeDestinatario = msg.substring(5, msg.length());
+				} else if (msg.startsWith(Comandos.MENSAGEM)) {
+					String nomeDestinatario = msg.substring(Comandos.MENSAGEM.length(), msg.length());
 					System.out.println("Enviado para " + nomeDestinatario);
 					GerenciadorDeClientes destinatario = clientes.get(nomeDestinatario);
 					if (destinatario == null) {
 						escritor.println(" O cliente informado não existe");
-					}else {
-						escritor.println("Digite uma mensagem para: " + destinatario.getNomeCliente());
-						destinatario.getEscritor().println(this.nomeCliente + "Disse: " + leitor.readLine());
+					} else {
+						destinatario.getEscritor().println(this.nomeCliente + " disse: " + leitor.readLine());
 					}
-				}
-				else {
-					escritor.println(this.nomeCliente + ", Disse: " + msg);
-				}
+					// lista o nome de todos os clientes logados
+				} else if (msg.equals(Comandos.LISTA_USUARIOS)) {
+					atualizarListaUsuarios(this);
+
+				} 
 
 			}
 
 		} catch (IOException e) {
 			System.err.println("O cliente fechou a conexão");
+			clientes.remove(this.nomeCliente);
+			e.printStackTrace();
 		}
-		super.run();
+	}
+
+	private void efetuarLogin() throws IOException {
+		while (true) {
+			escritor.println(Comandos.LOGIN);
+			this.nomeCliente = leitor.readLine().toLowerCase().replaceAll(",", "");
+			if (this.nomeCliente.equalsIgnoreCase("null") || this.nomeCliente.isEmpty()) {
+				escritor.println(Comandos.LOGIN_NEGADO);
+			} else if (clientes.containsKey(this.nomeCliente)) {
+				escritor.println(Comandos.LOGIN_NEGADO);
+			} else {
+				escritor.println(Comandos.LOGIN_ACEITO);
+				escritor.println("Olá " + this.nomeCliente);
+				clientes.put(this.nomeCliente, this);
+				for (String cliente : clientes.keySet()) {
+					atualizarListaUsuarios(clientes.get(cliente));
+				}
+				break;
+			}
+		}
+	}
+
+	private void atualizarListaUsuarios(GerenciadorDeClientes gerenciadorDeClientes) {
+		StringBuffer str = new StringBuffer();
+		for (String c : clientes.keySet()) {
+			if (gerenciadorDeClientes.getNomeCliente().equals(c))
+				continue;
+			str.append(c);
+			str.append(",");
+		}
+		if (str.length() > 0)
+			str.delete(str.length() - 1, str.length());
+		gerenciadorDeClientes.getEscritor().println(Comandos.LISTA_USUARIOS);
+		gerenciadorDeClientes.getEscritor().println(str.toString());
 	}
 
 	public PrintWriter getEscritor() {
 		return escritor;
 	}
 
-//	public BufferedReader getLeitor() {
-//		return leitor;
-//	}
-	
 	public String getNomeCliente() {
 		return nomeCliente;
 	}

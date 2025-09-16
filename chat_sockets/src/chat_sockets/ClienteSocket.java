@@ -24,6 +24,8 @@ public class ClienteSocket {
 
 						while (true) {
 							String mensagem = leitor.readLine();
+							if(mensagem == null || mensagem.isEmpty())
+								continue;
 							System.out.println("O servidor disse: " + mensagem);
 						}
 

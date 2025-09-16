@@ -10,7 +10,7 @@ public class ServidorSocket {
 
 		ServerSocket servidor = null;
 		try {
-			System.out.println("Iniando servidor...");
+			System.out.println("Iniciando servidor...");
 			servidor = new ServerSocket(9998);
 			System.out.println("Servidor Iniciado");
 			
